@@ -1,32 +1,27 @@
 pipeline {
     agent any
 
-    stages {
-        stage ('Compile Stage') {
+    tools {
+        maven "Maven"
+    }
+        stages {
+             stage ('Testing Stage') {
 
             steps {
-                withMaven(maven : 'maven_3_5_0') {
-                    sh 'mvn clean compile'
-                }
-            }
-        }
-
-        stage ('Testing Stage') {
-
-            steps {
-                withMaven(maven : 'maven_3_5_0') {
                     sh 'mvn test'
                 }
             }
-        }
+        
 
 
-        stage ('Deployment Stage') {
+        stage('Build') {
             steps {
-                withMaven(maven : 'maven_3_5_0') {
-                    sh 'mvn deploy'
+                dir('/var/lib/jenkins/workspace/multibranch-sample-app_master') {
+                    sh 'mvn clean install'
                 }
             }
         }
+        }
+
     }
 }
